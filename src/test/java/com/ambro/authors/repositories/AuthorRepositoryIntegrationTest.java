@@ -2,7 +2,6 @@ package com.ambro.authors.repositories;
 
 import com.ambro.authors.TestDataUtil;
 import com.ambro.authors.domain.Author;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorRepositoryIntegrationTest {
 
@@ -71,16 +68,16 @@ public class AuthorRepositoryIntegrationTest {
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(authorA);
     }
-//
-//    @Test
-//    public void testThatDeleteAuthorDeletesCorrectly(){
-//        // Arrange
-//        Author authorA = TestDataUtil.createTestAuthorA();
-//        underTest.create(authorA);
-//        // Act
-//        underTest.delete(authorA.getId());
-//        // Assert
-//        Optional<Author> result = underTest.findOne(authorA.getId());
-//        assertThat(result).isEmpty();
-//    }
+
+    @Test
+    public void testThatDeleteAuthorDeletesCorrectly(){
+        // Arrange
+        Author authorA = TestDataUtil.createTestAuthorA();
+        underTest.save(authorA);
+        // Act
+        underTest.deleteById(authorA.getId());
+        // Assert
+        Optional<Author> result = underTest.findById(authorA.getId());
+        assertThat(result).isEmpty();
+    }
 }
