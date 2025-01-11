@@ -1,17 +1,17 @@
 package com.ambro.authors.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Builder;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
-@Table(name = "books")
+@Table(name="books")
 public class Book {
     @Id
     private String isbn;
