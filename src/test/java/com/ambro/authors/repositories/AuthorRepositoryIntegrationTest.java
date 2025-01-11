@@ -2,6 +2,7 @@ package com.ambro.authors.repositories;
 
 import com.ambro.authors.TestDataUtil;
 import com.ambro.authors.domain.Author;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorRepositoryIntegrationTest {
 
+    @Autowired
     private IAuthorRepository underTest;
 
     @Autowired
@@ -28,8 +31,14 @@ public class AuthorRepositoryIntegrationTest {
 
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
+        // Create and save the Author
         Author author = TestDataUtil.createTestAuthorA();
-        underTest.save(author);
+        author = underTest.save(author);
+
+        // Verify the saved entity has an ID
+        assertThat(author.getId()).isNotNull();
+
+        // Retrieve and validate
         Optional<Author> result = underTest.findById(author.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(author);

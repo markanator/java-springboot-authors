@@ -8,21 +8,21 @@ public final class TestDataUtil {
 
     public static Author createTestAuthorA() {
         return Author.builder()
-                .id(1L)
+//                .id(1L)
                 .name("L.A. Rain")
                 .age(32)
                 .build();
     }
     public static Author createTestAuthorB() {
         return Author.builder()
-                .id(2L)
+//                .id(2L)
                 .name("Mark Ambro")
                 .age(33)
                 .build();
     }
     public static Author createTestAuthorC() {
         return Author.builder()
-                .id(3L)
+//                .id(3L)
                 .name("Amelia Casey")
                 .age(44)
                 .build();
