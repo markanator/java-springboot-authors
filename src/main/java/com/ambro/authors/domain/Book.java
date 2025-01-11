@@ -1,24 +1,25 @@
 package com.ambro.authors.domain;
 
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Builder;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Entity
+@Table(name = "books")
 public class Book {
-
+    @Id
     private String isbn;
 
     private String title;
 
-    private Long authorId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
+    private Author author;
 
 }
