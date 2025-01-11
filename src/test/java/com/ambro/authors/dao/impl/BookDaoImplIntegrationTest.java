@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BookDaoImplIntegrationTest {
-    private AuthorDao authorDao;
-    private BookDaoImpl underTest;
+    private final AuthorDao authorDao;
+    private final BookDaoImpl underTest;
 
     @Autowired
     public BookDaoImplIntegrationTest(AuthorDao authorDao, BookDaoImpl _underTest) {
@@ -80,5 +80,19 @@ public class BookDaoImplIntegrationTest {
         Optional<Book> result = underTest.findOne(bookA.getIsbn());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(bookA);
+    }
+
+    @Test
+    public void testThatBookCanBeDeleted(){
+        Author author = TestDataUtil.createTestAuthorA();
+        authorDao.create(author);
+        Book book = TestDataUtil.createTestBookA();
+        book.setAuthorId(author.getId());
+        underTest.create(book);
+
+        underTest.delete(book.getIsbn());
+
+        Optional<Book> result = underTest.findOne(book.getIsbn());
+        assertThat(result).isEmpty();
     }
 }

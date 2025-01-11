@@ -58,7 +58,7 @@ public class BookDaoImplTests {
 
     @Test
     public void testThatUpdateBookGeneratesCorrectSQL(){
-        var book = TestDataUtil.createTestBookA();
+        Book book = TestDataUtil.createTestBookA();
         book.setTitle("<UPDATED>");
         underTest.update(book.getIsbn(), book);
 
@@ -69,5 +69,15 @@ public class BookDaoImplTests {
                 1L,
                 "978-1-2345-6789-0"
         );
+    }
+
+    @Test
+    public void testThatDeleteBookGeneratesCorrectSQL(){
+        // Arrange
+        Book book = TestDataUtil.createTestBookA();
+        // Act
+        underTest.delete(book.getIsbn());
+        // Assert
+        verify(jdbcTemplate).update("DELETE FROM books WHERE isbn = ?", book.getIsbn());
     }
 }
