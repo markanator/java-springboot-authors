@@ -44,20 +44,20 @@ public class AuthorRepositoryIntegrationTest {
         assertThat(result.get()).isEqualTo(author);
     }
 
-//    @Test
-//    public void testThatFindManyReturnsAllAuthors(){
-//        Author authorA = TestDataUtil.createTestAuthorA();
-//        underTest.create(authorA);
-//        Author authorb = TestDataUtil.createTestAuthorB();
-//        underTest.create(authorb);
-//        Author authorc = TestDataUtil.createTestAuthorC();
-//        underTest.create(authorc);
-//
-//        List<Author> result = underTest.findMany();
-//        assertThat(result)
-//                .hasSize(3)
-//                .containsExactly(authorA, authorb, authorc);
-//    }
+    @Test
+    public void testThatFindManyReturnsAllAuthors(){
+        Author authorA = TestDataUtil.createTestAuthorA();
+        underTest.save(authorA);
+        Author authorb = TestDataUtil.createTestAuthorB();
+        underTest.save(authorb);
+        Author authorc = TestDataUtil.createTestAuthorC();
+        underTest.save(authorc);
+
+        Iterable<Author> result = underTest.findAll();
+        assertThat(result)
+                .hasSize(3)
+                .containsExactly(authorA, authorb, authorc);
+    }
 //
 //    @Test
 //    public void testThatUpdateAuthorUpdatesCorrectly(){
