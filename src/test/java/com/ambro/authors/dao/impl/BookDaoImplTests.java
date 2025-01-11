@@ -2,6 +2,7 @@ package com.ambro.authors.dao.impl;
 
 import com.ambro.authors.TestDataUtil;
 import com.ambro.authors.domain.Book;
+import org.checkerframework.checker.index.qual.PolyUpperBound;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -24,7 +25,7 @@ public class BookDaoImplTests {
 
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
-        Book book = TestDataUtil.createTestBook();
+        Book book = TestDataUtil.createTestBookA();
 
         underTest.create(book);
 
@@ -43,6 +44,30 @@ public class BookDaoImplTests {
                 eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
                 ArgumentMatchers.<BookDaoImpl.BookRowMapper>any(),
                 eq("978-1-2345-6789-0")
+        );
+    }
+
+    @Test
+    public void testThatFindManyGeneratesCorrectSql(){
+        underTest.findMany();
+        verify(jdbcTemplate).query(
+                eq("SELECT isbn, title, author_id FROM books"),
+                ArgumentMatchers.<BookDaoImpl.BookRowMapper>any()
+        );
+    }
+
+    @Test
+    public void testThatUpdateBookGeneratesCorrectSQL(){
+        var book = TestDataUtil.createTestBookA();
+        book.setTitle("<UPDATED>");
+        underTest.update(book.getIsbn(), book);
+
+        verify(jdbcTemplate).update(
+                "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                "978-1-2345-6789-0",
+                "<UPDATED>",
+                1L,
+                "978-1-2345-6789-0"
         );
     }
 }

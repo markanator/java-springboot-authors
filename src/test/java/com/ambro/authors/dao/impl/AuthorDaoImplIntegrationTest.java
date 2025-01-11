@@ -6,17 +6,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorDaoImplIntegrationTest {
 
-    private AuthorDaoImpl underTest;
+    private final AuthorDaoImpl underTest;
 
     @Autowired
     public AuthorDaoImplIntegrationTest(AuthorDaoImpl _underTest) {
@@ -26,11 +29,39 @@ public class AuthorDaoImplIntegrationTest {
 
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
-        Author author = TestDataUtil.createTestAuthor();
+        Author author = TestDataUtil.createTestAuthorA();
         underTest.create(author);
 
         Optional<Author> result = underTest.findOne(author.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(author);
+    }
+
+    @Test
+    public void testThatFindManyReturnsAllAuthors(){
+        Author authorA = TestDataUtil.createTestAuthorA();
+        underTest.create(authorA);
+        Author authorb = TestDataUtil.createTestAuthorB();
+        underTest.create(authorb);
+        Author authorc = TestDataUtil.createTestAuthorC();
+        underTest.create(authorc);
+
+        List<Author> result = underTest.findMany();
+        assertThat(result)
+                .hasSize(3)
+                .containsExactly(authorA, authorb, authorc);
+    }
+
+    @Test
+    public void testThatUpdateAuthorUpdatesCorrectly(){
+        Author authorA = TestDataUtil.createTestAuthorA();
+        underTest.create(authorA);
+
+        authorA.setName("<NAME>");
+        underTest.update(authorA.getId(), authorA);
+
+        Optional<Author> result = underTest.findOne(authorA.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(authorA);
     }
 }
