@@ -1,5 +1,7 @@
 package com.ambro.authors;
 
+import com.ambro.authors.domain.dto.AuthorDto;
+import com.ambro.authors.domain.dto.BookDto;
 import com.ambro.authors.domain.entities.AuthorEntity;
 import com.ambro.authors.domain.entities.BookEntity;
 
@@ -52,6 +54,14 @@ public final class TestDataUtil {
                 .isbn("978-1-2345-6789-2")
                 .title("The Last Ember")
                 .authorEntity(authorEntity)
+                .build();
+    }
+
+    public static BookDto createTestBookDtoA(final AuthorDto author) {
+        return BookDto.builder()
+                .isbn("978-1-2345-6789-1")
+                .title("The Shadow in the Attic")
+                .authorEntity(author)
                 .build();
     }
 }
