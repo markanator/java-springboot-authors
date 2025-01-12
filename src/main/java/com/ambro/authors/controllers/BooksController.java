@@ -6,10 +6,10 @@ import com.ambro.authors.mappers.Mapper;
 import com.ambro.authors.services.IBookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class BooksController {
@@ -31,5 +31,15 @@ public class BooksController {
         BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
 
         return new ResponseEntity<>(savedBookDto, HttpStatus.CREATED);
+    }
+    @GetMapping("/books")
+    public ResponseEntity<List<BookDto>> getAllBooks() {
+        List<BookEntity> books = bookService.findAll();
+        return new ResponseEntity<>(
+                books.stream()
+                        .map(bookMapper::mapTo)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
     }
 }

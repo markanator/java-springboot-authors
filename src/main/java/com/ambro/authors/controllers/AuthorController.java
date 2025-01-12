@@ -7,9 +7,13 @@ import com.ambro.authors.services.IAuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class AuthorController {
@@ -29,5 +33,16 @@ public class AuthorController {
         AuthorEntity authorEntity = authorMapper.mapFrom(author);
         AuthorEntity savedAuthorEntity = IAuthorService.createAuthor(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/authors")
+    public ResponseEntity<List<AuthorDto>> getAllAuthors() {
+        List<AuthorEntity> authors = IAuthorService.findAll();
+        return new ResponseEntity<>(
+                authors.stream()
+                        .map(authorMapper::mapTo)
+                        .collect(Collectors.toList()),
+                HttpStatus.OK
+        );
     }
 }
