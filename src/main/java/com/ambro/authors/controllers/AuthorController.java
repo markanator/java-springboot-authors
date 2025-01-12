@@ -16,12 +16,12 @@ import java.util.stream.Collectors;
 @RestController
 public class AuthorController {
 
-    private final IAuthorService IAuthorService;
+    private final IAuthorService authorService;
     private final Mapper<AuthorEntity, AuthorDto> authorMapper;
 
     @Autowired
     public AuthorController(IAuthorService _I_authorService, Mapper<AuthorEntity, AuthorDto> authorMapper) {
-        this.IAuthorService = _I_authorService;
+        this.authorService = _I_authorService;
         this.authorMapper = authorMapper;
     }
 
@@ -29,13 +29,13 @@ public class AuthorController {
     @PostMapping("/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
         AuthorEntity authorEntity = authorMapper.mapFrom(author);
-        AuthorEntity savedAuthorEntity = IAuthorService.createAuthor(authorEntity);
+        AuthorEntity savedAuthorEntity = authorService.save(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
     }
 
     @GetMapping("/authors")
     public ResponseEntity<List<AuthorDto>> getAllAuthors() {
-        List<AuthorEntity> authors = IAuthorService.findAll();
+        List<AuthorEntity> authors = authorService.findAll();
         return new ResponseEntity<>(
                 authors.stream()
                         .map(authorMapper::mapTo)
@@ -46,9 +46,20 @@ public class AuthorController {
 
     @GetMapping("/authors/{id}")
     public ResponseEntity<AuthorDto> getAuthorById(@PathVariable("id") Long id) {
-        Optional<AuthorEntity> maybeAuthor = IAuthorService.findOne(id);
+        Optional<AuthorEntity> maybeAuthor = authorService.findOne(id);
 
         return maybeAuthor.map(author -> new ResponseEntity<>(authorMapper.mapTo(author), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
+        if (!authorService.isExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        authorDto.setId(id);
+        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
+        AuthorEntity saved = authorService.save(authorEntity);
+        return new ResponseEntity<>(authorMapper.mapTo(authorEntity), HttpStatus.OK);
     }
 }
