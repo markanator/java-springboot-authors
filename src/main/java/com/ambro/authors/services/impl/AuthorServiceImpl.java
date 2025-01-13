@@ -43,4 +43,9 @@ public class AuthorServiceImpl implements IAuthorService {
     public boolean isExists(Long id) {
         return authorRepository.existsById(id);
     }
+
+    @Override
+    public void delete(Long id) {
+        authorRepository.deleteById(id);
+    }
 }

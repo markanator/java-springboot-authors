@@ -62,4 +62,12 @@ public class AuthorController {
         AuthorEntity saved = authorService.save(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(authorEntity), HttpStatus.OK);
     }
+
+    @DeleteMapping("/authors/{id}")
+    public ResponseEntity deleteAuthor(
+            @PathVariable("id") Long id
+    ) {
+        authorService.delete(id);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 }

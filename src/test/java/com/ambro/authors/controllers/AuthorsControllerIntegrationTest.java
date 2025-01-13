@@ -188,4 +188,29 @@ public class AuthorsControllerIntegrationTest {
                 );
 
     }
+    @Test
+    public void testThatDeleteAuthorReturns404WhenNoAuthorExists() throws Exception {
+        AuthorEntity testAuthorA = TestDataUtil.createTestAuthorA();
+        AuthorEntity savedAuthorA = authorService.save(testAuthorA);
+
+        AuthorDto testAuthorDtoA = TestDataUtil.createTestAuthorDtoA();
+        String res = objectMapper.writeValueAsString(testAuthorDtoA);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/authors/999999")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+    @Test
+    public void testThatDeleteAuthorReturns404WhenAuthorExists() throws Exception {
+        AuthorEntity testAuthorA = TestDataUtil.createTestAuthorA();
+        AuthorEntity savedAuthorA = authorService.save(testAuthorA);
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/authors/999999" + savedAuthorA.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 }
